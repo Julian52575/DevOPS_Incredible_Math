@@ -33,7 +33,7 @@ pipeline {
                     ] )
 
                 //Get CSV back
-                    unstash JenkinsNewMouli.csv"
+                    unstash JenkinsNewMouli.csv
                     sh "ls -lat"
             }
         }
