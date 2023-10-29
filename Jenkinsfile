@@ -19,17 +19,15 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 //Saving CSV file
-                    env.csvContent = sh (
-                        script: "cat JenkinsNewMouli.csv",
-                        returnStdout: true
-                    )
+                    stash name: "csvFile", includes: "JenkinsNewMouli.csv"
+
                 //Checkout project
                     git branch: 'main',
                         credentialsId: params.Credential,
                         url: params.Repository
 
-                //Recreate CSV file
-                    cat '${csvContent} > JenkinsNewMouli.csv'
+                //Get CSV back
+                    unstash csvFile
                     sh "ls -lat"
             }
         }
