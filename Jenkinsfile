@@ -12,30 +12,25 @@ pipeline {
 
     environment {
         hasCompiled = 0
+        csvContent = "hi"
     }
 
     stages {
         stage('Stash CSV') {
             steps {
-                stash name: "JenkinsNewMouli", includes: "./JenkinsNewMouli.csv"
+                script {
+                    env.csvContent = sh 'cat ./JenkinsNewMouli.csv'
+                }
             }
         }
+
         stage('Checkout Code') {
             steps {
-
                 //Checkout project
                     git branch: 'main',
                         credentialsId: params.Credential,
                         url: params.Repository
 
-                    //checkout(
-                    //    [$class: 'GitSCM',
-                    //    branches: [[name: 'main']],
-                    //    doGenerateSubmoduleConfigurations: false,
-                    //    userRemoteConfigs: [[credentialsId: params.Credential, url: params.Repository]]
-                    //] )
-
-                //Get CSV back
                     sh "ls -lat"
             }
         }
@@ -57,7 +52,7 @@ pipeline {
             //} 
             steps {
                 printTable()
-                unstash JenkinsNewMouli
+                sh "cat ${env.csvContent} >> JenkinsNewMouli.csv"
                 runTestFromCSV()
                 printTableEnd()
             }
