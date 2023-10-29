@@ -12,7 +12,6 @@ pipeline {
 
     environment {
         hasCompiled = 0
-        csvContent = ""
     }
 
     stages {
