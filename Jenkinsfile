@@ -21,16 +21,16 @@ pipeline {
                 stash name: "JenkinsNewMouli.csv", includes: "JenkinsNewMouli.csv"
 
                 //Checkout project
-                    //git branch: 'main',
-                    //    credentialsId: params.Credential,
-                    //    url: params.Repository
+                    git branch: 'main',
+                        credentialsId: params.Credential,
+                        url: params.Repository
 
-                    checkout(
-                        [$class: 'GitSCM',
-                        branches: [[name: 'main']],
-                        doGenerateSubmoduleConfigurations: false,
-                        userRemoteConfigs: [[credentialsId: params.Credential, url: params.Repository]]
-                    ] )
+                    //checkout(
+                    //    [$class: 'GitSCM',
+                    //    branches: [[name: 'main']],
+                    //    doGenerateSubmoduleConfigurations: false,
+                    //    userRemoteConfigs: [[credentialsId: params.Credential, url: params.Repository]]
+                    //] )
 
                 //Get CSV back
                     unstash JenkinsNewMouli.csv
