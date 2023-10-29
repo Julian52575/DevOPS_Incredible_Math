@@ -15,10 +15,13 @@ pipeline {
     }
 
     stages {
+        stage('Stash CSV') {
+            steps {
+                stash name: "JenkinsNewMouli", includes: "./JenkinsNewMouli.csv"
+            }
+        }
         stage('Checkout Code') {
             steps {
-                //Saving CSV file
-                //stash name: "JenkinsNewMouli.csv", includes: "JenkinsNewMouli.csv"
 
                 //Checkout project
                     git branch: 'main',
@@ -33,14 +36,7 @@ pipeline {
                     //] )
 
                 //Get CSV back
-                    //unstash JenkinsNewMouli.csv
                     sh "ls -lat"
-            }
-        }
-
-        stage("Hello world") {
-            steps {
-                sh( 'echo "Starting Jenkinsfile.."' )
             }
         }
 
@@ -58,9 +54,10 @@ pipeline {
         stage("Check in-depth") {
             //when {
             //    expression { return env.hasCompiled == 0 }
-            //}
+            //} 
             steps {
                 printTable()
+                unstash JenkinsNewMouli
                 runTestFromCSV()
                 printTableEnd()
             }
