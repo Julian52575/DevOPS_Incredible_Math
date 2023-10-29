@@ -12,15 +12,21 @@ pipeline {
 
     environment {
         hasCompiled = 0
+        csvContent = ""
     }
 
     stages {
         stage('Checkout Code') {
             steps {
+                csvContent = sh (
+                    script: "cat JenkinsNewMouli.csv",
+                    returnStdout: true
+                )
                 git branch: 'main',
                     credentialsId: params.Credential,
                     url: params.Repository
 
+                cat '${csvContent} > JenkinsNewMouli.csv'
                 sh "ls -lat"
             }
         }
