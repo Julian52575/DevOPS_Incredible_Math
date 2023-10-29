@@ -19,7 +19,6 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 //Saving CSV file
-                script {
                     env.csvContent = sh (
                         script: "cat JenkinsNewMouli.csv",
                         returnStdout: true
@@ -32,7 +31,6 @@ pipeline {
                 //Recreate CSV file
                     cat '${csvContent} > JenkinsNewMouli.csv'
                     sh "ls -lat"
-                }
             }
         }
 
