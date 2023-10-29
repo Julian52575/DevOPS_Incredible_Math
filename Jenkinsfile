@@ -12,16 +12,19 @@ pipeline {
 
     environment {
         hasCompiled = 0
+        csvContent = "hi."
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 //Saving CSV file
-                def csvContent = sh (
-                    script: "cat JenkinsNewMouli.csv",
-                    returnStdout: true
-                )
+                script {
+                    env.csvContent = sh (
+                        script: "cat JenkinsNewMouli.csv",
+                        returnStdout: true
+                    )
+                }
                 //Checkout project
                 git branch: 'main',
                     credentialsId: params.Credential,
