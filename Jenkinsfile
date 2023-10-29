@@ -18,7 +18,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 //Saving CSV file
-                stash name: "JenkinsNewMouli.csv", includes: "JenkinsNewMouli.csv"
+                //stash name: "JenkinsNewMouli.csv", includes: "JenkinsNewMouli.csv"
 
                 //Checkout project
                     git branch: 'main',
@@ -33,7 +33,7 @@ pipeline {
                     //] )
 
                 //Get CSV back
-                    unstash JenkinsNewMouli.csv
+                    //unstash JenkinsNewMouli.csv
                     sh "ls -lat"
             }
         }
