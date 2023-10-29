@@ -4,7 +4,7 @@ pipeline {
 
     parameters {
         string(name: 'Repository', defaultValue: 'https://github.com/Julian52575/Incredible_Math')
-        string(name: 'Credential')
+        credentials(name: 'Credential')
         string(name: 'ProjectName', defaultValue: 'Incredible Math')
         string(name: 'Author', defaultValue: 'Julian Bottiglione', description: 'he who started it all')
         string(name: 'Email', defaultValue: 'julian.bottiglione@epitech.eu', description: 'the email that will receive the log')
