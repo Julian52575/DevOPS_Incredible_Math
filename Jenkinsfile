@@ -15,7 +15,16 @@ pipeline {
     }
 
     stages {
-        
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    credentialsId: params.Credential,
+                    url: params.Repository
+
+                sh "ls -lat"
+            }
+        }
+
         stage("Hello world") {
             steps {
                 sh( 'echo "Starting Jenkinsfile.."' )
