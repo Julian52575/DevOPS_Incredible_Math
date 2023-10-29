@@ -12,14 +12,17 @@ pipeline {
 
     environment {
         hasCompiled = 0
-        csvContent = "hi"
+        csvContent = ""
     }
 
     stages {
         stage('Stash CSV') {
             steps {
                 script {
-                    env.csvContent = sh 'cat ./JenkinsNewMouli.csv'
+                    env.csvContent = sh (
+                        script: 'cat ./JenkinsNewMouli.csv',
+                        returnStdout: true
+                    )
                 }
             }
         }
