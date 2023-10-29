@@ -30,7 +30,7 @@ pipeline {
                         branches: [[name: 'main']], 
                         doGenerateSubmoduleConfigurations: false, 
                         userRemoteConfigs: [[credentialsId: params.Credential, url: params.Repository]]
-                    )
+                    ] )
 
                 //Get CSV back
                     unstash JenkinsNewMouli.csv"
