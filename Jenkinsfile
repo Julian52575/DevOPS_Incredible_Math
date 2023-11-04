@@ -20,14 +20,12 @@ pipeline {
         stage('Checkout and stash CSV') {
             steps {
                 script {
+                    
                     git branch: 'Jenkins',
                         credentialsId: params.Credential,
                         url: env.githubRepo
-                    
-                    env.csvContent = sh (
-                        script: 'cat ./JenkinsNewMouli.csv',
-                        returnStdout: true
-                    )
+                   
+                    stash name: 'csvFile', includes: './JenkinsNewMouli.csv'
                 }
             }
         }
@@ -59,8 +57,8 @@ pipeline {
             //    expression { return env.hasCompiled == 0 }
             //} 
             steps {
+                unstash 'csvFile'
                 printTable()
-                sh "cat ${env.csvContent} >> JenkinsNewMouli.csv"
                 runTestFromCSV()
                 printTableEnd()
             }
