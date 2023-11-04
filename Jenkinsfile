@@ -15,11 +15,12 @@ pipeline {
         csvContent = ""
         githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
         csvName = "NMtests.csv"
-        logName = "new_mouli_log.txt"
+        logName = "New_mouli.log"
+        depthName = "InDepth.log"
     }
 
     stages {
-        stage('Checkout and stash CSV') {
+        stage('Checkout and stash config files') {
             steps {
                 script {
                     
@@ -28,7 +29,7 @@ pipeline {
                         url: env.githubRepo
                   
                     sh 'ls -l'
-                    stash includes: "${env.csvName}", name: 'csvFile'
+                    stash includes: "*", excludes: "*git*", name: 'configFiles'
                 }
             }
         }
@@ -48,8 +49,9 @@ pipeline {
             steps {
                 script {
                     env.hasCompiled = checkBasics(
-                        name:"math",
-                        author:params.Author
+                        name: "math",
+                        author: params.Author
+                        logName: "${env.logName}"
                     )
                 }
             }
@@ -60,12 +62,16 @@ pipeline {
             //    expression { return env.hasCompiled == 0 }
             //} 
             steps {
-                unstash 'csvFile'
+                unstash 'configFiles'
                 printTable()
-                runTestFromCSV()
+                runTestFromCSV( 
+                    CSVfile: "${env.csvName}"
+                    logName: "${env.logName}"
+                    depthName: "${env.depthName}"
+                )
                 printTableEnd()
                 stash includes: "${env.logName}", name: 'logFile'
-                stash includes: "InDepth.log", name: 'depthFile'
+                stash includes: "${env.depthName}", name: 'depthFile'
             }
         }
     }
@@ -74,7 +80,11 @@ pipeline {
         success {
             unstash 'logFile'
             unstash 'depthFile'
-            sendEmailReport( projectName:params.ProjectName )
+            sendEmailReport( 
+                projectName: params.ProjectName
+                logName: "${env.logName}"
+                depthName: "${env.depthName}"
+            )
         }
 
         always {            
