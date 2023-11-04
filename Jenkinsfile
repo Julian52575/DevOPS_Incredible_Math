@@ -63,6 +63,7 @@ pipeline {
                 printTable()
                 runTestFromCSV()
                 printTableEnd()
+                sh 'ls'
             }
         }
     }
