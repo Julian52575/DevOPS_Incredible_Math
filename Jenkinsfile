@@ -1,6 +1,12 @@
 @Library("CompilationLibrary") _
 pipeline {
-    agent any
+
+  agent {
+    docker {
+      image 'epitechcontent/epitest-docker'
+      //args '-d -p 80:80 /usr/sbin/apache2ctl -D FOREGROUND'
+    }
+  }
 
     parameters {
         string(name: 'Repository', defaultValue: 'https://github.com/Julian52575/Incredible_Math')
