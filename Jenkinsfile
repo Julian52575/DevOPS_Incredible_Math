@@ -77,7 +77,7 @@ pipeline {
                     logName: "${env.logName}"
                 )
                 runTestFromCSV( 
-                    CSVfile: "${env.csvName}",
+                    CSVname: "${env.csvName}",
                     logName: "${env.logName}",
                     depthName: "${env.depthName}"
                 )
