@@ -50,7 +50,7 @@ pipeline {
                 script {
                     env.hasCompiled = checkBasics(
                         name: "math",
-                        author: params.Author
+                        author: params.Author,
                         logName: "${env.logName}"
                     )
                 }
@@ -67,8 +67,8 @@ pipeline {
                     logName: "${env.logName}"
                 )
                 runTestFromCSV( 
-                    CSVfile: "${env.csvName}"
-                    logName: "${env.logName}"
+                    CSVfile: "${env.csvName}",
+                    logName: "${env.logName}",
                     depthName: "${env.depthName}"
                 )
                 printTableEnd(
@@ -86,8 +86,8 @@ pipeline {
             unstash 'logFile'
             unstash 'depthFile'
             sendEmailReport( 
-                projectName: params.ProjectName
-                logName: "${env.logName}"
+                projectName: params.ProjectName,
+                logName: "${env.logName}",
                 depthName: "${env.depthName}"
             )
 
