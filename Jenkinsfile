@@ -53,7 +53,7 @@ pipeline {
                         name: "${env.binaryName}",
                         author: params.Author,
                         logName: "${env.logName}",
-                        depthName: ${env.depthName}
+                        depthName: "${env.depthName}"
                     )
                     stash includes: "${env.logName}", name: 'logFile'
                     stash includes: "${env.depthName}", name: 'depthFile'
