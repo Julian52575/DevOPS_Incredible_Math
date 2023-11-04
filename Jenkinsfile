@@ -63,13 +63,17 @@ pipeline {
             //} 
             steps {
                 unstash 'configFiles'
-                printTable()
+                printTable(
+                    logName: "${env.logName}"
+                )
                 runTestFromCSV( 
                     CSVfile: "${env.csvName}"
                     logName: "${env.logName}"
                     depthName: "${env.depthName}"
                 )
-                printTableEnd()
+                printTableEnd(
+                    logName: "${env.logName}"
+                )
                 stash includes: "${env.logName}", name: 'logFile'
                 stash includes: "${env.depthName}", name: 'depthFile'
             }
