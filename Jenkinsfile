@@ -64,6 +64,8 @@ pipeline {
                 printTable()
                 runTestFromCSV()
                 printTableEnd()
+                stash includes: "${env.logName}", name: 'logFile'
+                stash includes: "InDepth.log", name: 'depthFile'
             }
         }
     }
@@ -71,6 +73,7 @@ pipeline {
 
         success {
             unstash 'logFile'
+            unstash 'depthFile'
             sendEmailReport( projectName:params.ProjectName )
         }
 
