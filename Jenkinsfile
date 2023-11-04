@@ -14,6 +14,7 @@ pipeline {
         hasCompiled = 0
         csvContent = ""
         githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
+        binaryName = "math"
         csvName = "NMtests.csv"
         logName = "New_mouli.log"
         depthName = "InDepth.log"
@@ -49,20 +50,29 @@ pipeline {
             steps {
                 script {
                     env.hasCompiled = checkBasics(
-                        name: "math",
+                        name: "${env.binaryName}",
                         author: params.Author,
-                        logName: "${env.logName}"
+                        logName: "${env.logName}",
+                        depthName: ${env.depthName}
                     )
+                    stash includes: "${env.logName}", name: 'logFile'
+                    stash includes: "${env.depthName}", name: 'depthFile'
                 }
             }
         }
 
-        stage("Check in-depth") {
+        stage("Check CMDs") {
             //when {
             //    expression { return env.hasCompiled == 0 }
             //} 
             steps {
+             
+                //Unstashing config and logs files
                 unstash 'configFiles'
+                unstash 'logFile'
+                unstash 'depthFile'
+
+                //Starting tests
                 printTable(
                     logName: "${env.logName}"
                 )
@@ -82,7 +92,6 @@ pipeline {
     post {
 
         always {
-
             unstash 'logFile'
             unstash 'depthFile'
             sendEmailReport( 
