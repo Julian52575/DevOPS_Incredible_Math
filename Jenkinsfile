@@ -14,6 +14,7 @@ pipeline {
         hasCompiled = 0
         csvContent = ""
         githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
+        csvName = "NMtests.csv"
     }
 
     stages {
@@ -24,8 +25,9 @@ pipeline {
                     git branch: 'Jenkins',
                         credentialsId: params.Credential,
                         url: env.githubRepo
-                   
-                    stash name: 'csvFile', includes: './JenkinsNewMouli.csv'
+                  
+                    sh 'ls -l'
+                    stash includes: "${env.csvName}", name: 'csvFile'
                 }
             }
         }
@@ -65,9 +67,12 @@ pipeline {
         }
     }
     post {
-        always {
+
+        success {
             sendEmailReport( projectName:params.ProjectName )
-            
+        }
+
+        always {            
             // Clean after build
             cleanWs(cleanWhenNotBuilt: true,
                     deleteDirs: true,
