@@ -13,12 +13,17 @@ pipeline {
     environment {
         hasCompiled = 0
         csvContent = ""
+        githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
     }
 
     stages {
-        stage('Stash CSV') {
+        stage('Checkout and stash CSV') {
             steps {
                 script {
+                    git branch: 'Jenkins',
+                        credentialsId: params.Credential,
+                        url: env.githubRepo
+                    
                     env.csvContent = sh (
                         script: 'cat ./JenkinsNewMouli.csv',
                         returnStdout: true
