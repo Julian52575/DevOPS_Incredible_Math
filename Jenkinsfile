@@ -15,6 +15,7 @@ pipeline {
         csvContent = ""
         githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
         csvName = "NMtests.csv"
+        logName = "new_mouli_log.txt"
     }
 
     stages {
@@ -63,15 +64,14 @@ pipeline {
                 printTable()
                 runTestFromCSV()
                 printTableEnd()
-                sh 'ls'
+                stash includes: "${env.logName}", name: 'logFile'
             }
         }
     }
     post {
 
         success {
-            sh 'ls'
-            sh 'cat new_mouli_log.txt'
+            unstash 'logFile'
             sendEmailReport( projectName:params.ProjectName )
         }
 
