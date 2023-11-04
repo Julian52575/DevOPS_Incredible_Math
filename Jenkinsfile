@@ -64,7 +64,6 @@ pipeline {
                 printTable()
                 runTestFromCSV()
                 printTableEnd()
-                stash includes: "${env.logName}", name: 'logFile'
             }
         }
     }
