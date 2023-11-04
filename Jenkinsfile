@@ -81,7 +81,8 @@ pipeline {
     }
     post {
 
-        success {
+        always {
+
             unstash 'logFile'
             unstash 'depthFile'
             sendEmailReport( 
@@ -89,9 +90,7 @@ pipeline {
                 logName: "${env.logName}"
                 depthName: "${env.depthName}"
             )
-        }
 
-        always {            
             // Clean after build
             cleanWs(cleanWhenNotBuilt: true,
                     deleteDirs: true,
