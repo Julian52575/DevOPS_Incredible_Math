@@ -69,6 +69,8 @@ pipeline {
     post {
 
         success {
+            sh 'ls'
+            sh 'cat new_mouli_log.txt'
             sendEmailReport( projectName:params.ProjectName )
         }
 
