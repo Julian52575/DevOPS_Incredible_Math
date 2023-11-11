@@ -1,0 +1,2 @@
+FROM ghcr.io/epitech/coding-style-checker:latest
+
