@@ -2,10 +2,11 @@
 pipeline {
 
   agent {
-    dockerContainer {
-      image 'epitechcontent/epitest-docker'
+    any
+    //dockerContainer {
+      //image 'epitechcontent/epitest-docker'
       //args '-d -p 80:80 /usr/sbin/apache2ctl -D FOREGROUND'
-    }
+    //}
   }
 
     parameters {
