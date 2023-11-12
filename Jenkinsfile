@@ -22,7 +22,8 @@ pipeline {
         csvContent = ""
         githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
         binaryName = "math"
-        csvName = "NMtests.csv"
+        csvTestName = "Tests.csv"
+        csvSetupName = "Setup.csv"
         logName = "New_mouli.log"
         depthName = "InDepth.log"
     }
@@ -79,12 +80,17 @@ pipeline {
                 unstash 'logFile'
                 unstash 'depthFile'
 
+                //Setup
+                runSetupFromCSV(
+                    CSVname: "${env.csvSetupName}"
+                )
+
                 //Starting tests
                 printTable(
                     logName: "${env.logName}"
                 )
                 runTestFromCSV( 
-                    CSVname: "${env.csvName}",
+                    CSVname: "${env.csvTestName}",
                     logName: "${env.logName}",
                     depthName: "${env.depthName}"
                 )
