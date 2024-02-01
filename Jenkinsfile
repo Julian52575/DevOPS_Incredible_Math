@@ -1,13 +1,8 @@
-@Library("CompilationLibrary") _
+@Library("My_Testing_Library") _
+
 pipeline {
 
-  agent any //{
-    //any
-    //dockerContainer {
-      //image 'epitechcontent/epitest-docker'
-      //args '-d -p 80:80 /usr/sbin/apache2ctl -D FOREGROUND'
-    //}
-  //}
+  agent any
 
     parameters {
         string(name: 'Repository', defaultValue: 'https://github.com/Julian52575/Incredible_Math')
@@ -18,18 +13,18 @@ pipeline {
     }
 
     environment {
-        hasCompiled = 0
+        compilationStatus = 84
         csvContent = ""
         githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
         binaryName = "math"
         csvTestName = "Tests.csv"
         csvSetupName = "Setup.csv"
-        logName = "New_mouli.log"
-        depthName = "InDepth.log"
+        logName = "Result.log"
+        depthName = "Mouli.log"
     }
 
     stages {
-        stage('Checkout and stash config files') {
+        stage('C] Checkout and stash config files') {
             steps {
                 script {
                     
@@ -37,42 +32,42 @@ pipeline {
                         credentialsId: params.Credential,
                         url: env.githubRepo
                   
-                    sh 'ls -l'
                     stash includes: "*", excludes: "*git*", name: 'configFiles'
                 }
             }
         }
 
-        stage('Checkout Code') {
+        stage('C] Checkout Code') {
             steps {
                 //Checkout project
                     git branch: 'main',
                         credentialsId: params.Credential,
                         url: params.Repository
 
-                    sh "ls -lat"
             }
         }
 
-        stage("Check Basics") {
+        stage("T] Compilation") {
             steps {
                 script {
-                    env.hasCompiled = checkBasics(
+                    compilationStatus = checkBasics(
                         name: "${env.binaryName}",
                         author: params.Author,
                         logName: "${env.logName}",
                         depthName: "${env.depthName}"
                     )
+                    
+                    echo "Compilation Status = ${compilationStatus}"
                     stash includes: "${env.logName}", name: 'logFile'
                     stash includes: "${env.depthName}", name: 'depthFile'
                 }
             }
         }
 
-        stage("Check CMDs") {
-            //when {
-            //    expression { return env.hasCompiled == 0 }
-            //} 
+        stage("T] Mouli") {
+            when {
+                expression { compilationStatus == 0 }
+            }
             steps {
              
                 //Unstashing config and logs files
