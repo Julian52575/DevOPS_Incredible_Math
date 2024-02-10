@@ -5,26 +5,23 @@ pipeline {
   agent any
 
     parameters {
-        string(name: 'Repository', defaultValue: 'https://github.com/Julian52575/Incredible_Math')
         credentials(name: 'Credential')
-        string(name: 'ProjectName', defaultValue: 'Incredible Math')
-        string(name: 'Author', defaultValue: 'Julian Bottiglione', description: 'he who started it all')
+        string(name: 'Repository', defaultValue: 'https://github.com/Julian52575/Incredible_Math')
         string(name: 'Email', defaultValue: 'julian.bottiglione@epitech.eu', description: 'the email that will receive the log')
     }
 
     environment {
+        binaryName = "math"
+        githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
         compilationStatus = 84
         csvContent = ""
-        githubRepo = "https://github.com/Julian52575/Incredible_Math_Test_Configuration_Files"
-        binaryName = "math"
         csvTestName = "Tests.csv"
         csvSetupName = "Setup.csv"
-        logName = "Result.log"
-        depthName = "Mouli.log"
+        logPath = "Result.log"
     }
 
     stages {
-        stage('C] Checkout and stash config files') {
+        stage('Checkout and stash config files') {
             steps {
                 script {
                     
@@ -33,11 +30,15 @@ pipeline {
                         url: env.githubRepo
                   
                     stash includes: "*", excludes: "*git*", name: 'configFiles'
+
+                    sh "touch ${env.logPath}"
+                    sh 'ls'
+                    stash includes: "${env.logPath}", name: 'logFile'
                 }
             }
         }
 
-        stage('C] Checkout Code') {
+        stage('Checkout Code') {
             steps {
                 //Checkout project
                     git branch: 'main',
@@ -47,24 +48,26 @@ pipeline {
             }
         }
 
-        stage("T] Compilation") {
+        stage("@-Compilation") {
             steps {
                 script {
+                    printHeader(
+                        name: "${env.binaryName}",
+                        logName: "${env.logPath}"
+                    )
                     compilationStatus = checkBasics(
                         name: "${env.binaryName}",
                         author: params.Author,
-                        logName: "${env.logName}",
-                        depthName: "${env.depthName}"
+                        logName: "${env.logPath}"
                     )
                     
                     echo "Compilation Status = ${compilationStatus}"
-                    stash includes: "${env.logName}", name: 'logFile'
-                    stash includes: "${env.depthName}", name: 'depthFile'
+                    stash includes: "${env.logPath}", name: 'logFile'
                 }
             }
         }
 
-        stage("T] Mouli") {
+        stage("@-Mouli") {
             when {
                 expression { compilationStatus == 0 }
             }
@@ -73,27 +76,24 @@ pipeline {
                 //Unstashing config and logs files
                 unstash 'configFiles'
                 unstash 'logFile'
-                unstash 'depthFile'
 
                 //Setup
                 runSetupFromCSV(
-                    CSVname: "${env.csvSetupName}"
+                    CSVpath: "${env.csvSetupName}"
                 )
 
                 //Starting tests
                 printTable(
-                    logName: "${env.logName}"
+                    logName: "${env.logPath}"
                 )
                 runTestFromCSV( 
-                    CSVname: "${env.csvTestName}",
-                    logName: "${env.logName}",
-                    depthName: "${env.depthName}"
+                    CSVpath: "${env.csvTestName}",
+                    logName: "${env.logPath}"
                 )
                 printTableEnd(
-                    logName: "${env.logName}"
+                    logName: "${env.logPath}"
                 )
-                stash includes: "${env.logName}", name: 'logFile'
-                stash includes: "${env.depthName}", name: 'depthFile'
+                stash includes: "${env.logPath}", name: 'logFile'
             }
         }
     }
@@ -101,11 +101,10 @@ pipeline {
 
         always {
             unstash 'logFile'
-            unstash 'depthFile'
             sendEmailReport( 
                 projectName: params.ProjectName,
-                logName: "${env.logName}",
-                depthName: "${env.depthName}"
+                receiverEmailAddress: params.Email,
+                logPath: "${env.logPath}"
             )
 
             // Clean after build
